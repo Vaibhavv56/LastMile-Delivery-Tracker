@@ -10,7 +10,13 @@ The platform provides roles for Administrators (to supervise fleet logistics, ma
 
 ---
 
-## 2. Features
+## 2. System Architecture Diagram
+
+![System Architecture Diagram](architecture_diagram.png)
+
+---
+
+## 3. Features
 
 ### Admin Console
 - Fleet Operations Dashboard: View total orders, transit states, agent metrics, and revenues in a unified operations hub.
@@ -36,7 +42,7 @@ The platform provides roles for Administrators (to supervise fleet logistics, ma
 
 ---
 
-## 3. Tech Stack
+## 4. Tech Stack
 
 | Component | Technology | Description |
 |---|---|---|
@@ -51,7 +57,7 @@ The platform provides roles for Administrators (to supervise fleet logistics, ma
 
 ---
 
-## 4. Database Design
+## 5. Database Design
 
 The database schema is mapped using Prisma ORM. Models include:
 
@@ -70,7 +76,7 @@ The database schema is mapped using Prisma ORM. Models include:
 
 ---
 
-## 5. Logistics Workflow
+## 6. Logistics Workflow
 
 The system manages parcels through the following sequential stages:
 
@@ -85,7 +91,7 @@ The system manages parcels through the following sequential stages:
 
 ---
 
-## 6. Rate Calculation Engine
+## 7. Rate Calculation Engine
 
 The system uses a strict calculation structure to estimate shipping costs:
 
@@ -101,7 +107,7 @@ The system uses a strict calculation structure to estimate shipping costs:
 
 ---
 
-## 7. Zone Detection
+## 8. Zone Detection
 
 The platform maps coordinates to delivery zones through the following layers:
 
@@ -112,7 +118,7 @@ The platform maps coordinates to delivery zones through the following layers:
 
 ---
 
-## 8. Auto Agent Assignment
+## 9. Auto Agent Assignment
 
 When an order is created, the system assigns a delivery driver using these criteria:
 
@@ -123,7 +129,7 @@ When an order is created, the system assigns a delivery driver using these crite
 
 ---
 
-## 9. Failed Delivery Handling
+## 10. Failed Delivery Handling
 
 If an agent cannot deliver a package:
 
@@ -134,7 +140,7 @@ If an agent cannot deliver a package:
 
 ---
 
-## 10. API Documentation
+## 11. API Documentation
 
 ### Authentication Endpoints
 | HTTP Method | Endpoint | Access Level | Description |
@@ -217,7 +223,7 @@ If an agent cannot deliver a package:
 
 ---
 
-## 11. Project Structure
+## 12. Project Structure
 
 ```text
 admin-02/
@@ -308,7 +314,7 @@ admin-02/
 
 ---
 
-## 12. Installation
+## 13. Installation
 
 Follow these steps to set up and configure the application locally.
 
@@ -350,7 +356,7 @@ You can log in to the application using the following predefined testing account
 
 ---
 
-## 13. Environment Variables
+## 14. Environment Variables
 
 Create a .env file in the backend folder using the following variables:
 
@@ -368,7 +374,7 @@ SMTP_FROM="LastMile Logistics <your_email@gmail.com>"
 
 ---
 
-## 14. Running the Project
+## 15. Running the Project
 
 1. Run the Backend API server:
    cd backend
@@ -380,7 +386,7 @@ SMTP_FROM="LastMile Logistics <your_email@gmail.com>"
 
 ---
 
-## 15. Future Improvements
+## 16. Future Improvements
 
 - Live GPS Tracking: Render real-time GPS locations of delivery agents on maps using web sockets.
 - ETA Prediction: Integrate machine learning algorithms to predict accurate package arrival times.
