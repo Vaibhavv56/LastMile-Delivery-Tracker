@@ -317,8 +317,23 @@ Follow these steps to set up and configure the application locally.
    npx prisma migrate dev --name init
 2. Generate the Prisma Client schema:
    npx prisma generate
-3. Seed the database with base mock configurations (Default Admin: admin@gmail.com / admin123, Zones, and Rate Cards):
+3. Seed the database with base mock configurations (Default Admin: admin@gmail.com / admin, Zones, and Rate Cards):
    npx prisma db seed
+
+### Default Testing Credentials
+You can log in to the application using the following predefined testing accounts:
+
+- Administrator:
+  Email: admin@gmail.com
+  Password: admin
+
+- Customer:
+  Email: vaibhav.pujari231@vit.edu
+  Password: 123456
+
+- Delivery Agent:
+  Email: narendra.modi@gmail.com (or narendra.modi@@gmail.com)
+  Password: Ronaldo1$
 
 ### Frontend Setup
 1. Open a new terminal and navigate to the frontend folder:
