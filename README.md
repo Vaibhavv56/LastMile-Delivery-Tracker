@@ -1,5 +1,7 @@
 # Last Mile Delivery Tracker
 
+Live Deployment: https://last-mile-delivery-tracker-eosin.vercel.app/
+
 ## 1. Project Overview
 
 The Last Mile Delivery Tracker is an enterprise-grade logistics and fulfillment administration platform designed to optimize post-warehouse supply chain operations. The primary objective is to manage the final leg of shipments, matching packages with the most suitable delivery agent, tracking transit states in real time, and configuring dynamic routing, service coverage areas, and shipping rates.
