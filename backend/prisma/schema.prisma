@@ -1,0 +1,397 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/////////////////////////
+// ENUMS
+/////////////////////////
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+  AGENT
+}
+
+enum OrderType {
+  B2B
+  B2C
+}
+
+enum PaymentType {
+  PREPAID
+  COD
+}
+
+enum OrderStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+}
+
+enum VehicleType {
+  BIKE
+  SCOOTER
+  CAR
+  VAN
+}
+
+/////////////////////////
+// USERS
+/////////////////////////
+model User {
+  id Int @id @default(autoincrement())
+
+  firstName String
+  lastName  String
+
+  email    String @unique
+  password String
+  phone    String @unique
+
+  role     UserRole
+  isActive Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Profiles
+  customerProfile CustomerProfile?
+  adminProfile    AdminProfile?
+  agentProfile    AgentProfile?
+
+  // Orders
+  customerOrders Order[] @relation("CustomerOrders")
+  assignedOrders Order[] @relation("AgentOrders")
+
+  // Notifications
+  notifications Notification[]
+
+  // Tracking updates
+  trackingUpdates TrackingHistory[] @relation("TrackingUpdatedBy")
+
+  // Rescheduled orders
+  reassignedOrders Reschedule[] @relation("ReassignedAgent")
+
+  @@index([role])
+}
+
+model CustomerProfile {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  companyName String?
+
+  gstNumber String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model AdminProfile {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model AgentProfile {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  vehicleNumber String
+
+  vehicleType VehicleType
+
+  licenseNumber String
+
+  availability Boolean @default(true)
+
+  currentZoneId Int?
+
+  currentZone Zone? @relation("AgentZone", fields: [currentZoneId], references: [id])
+
+  location AgentLocation?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+/////////////////////////
+// ZONES
+/////////////////////////
+model Zone {
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
+  description String?
+
+  areas Area[]
+
+  agents AgentProfile[] @relation("AgentZone")
+
+  pickupOrders Order[] @relation("PickupZone")
+
+  dropOrders Order[] @relation("DropZone")
+
+  pickupRates RateCard[] @relation("PickupRate")
+
+  dropRates RateCard[] @relation("DropRate")
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+/////////////////////////
+// AREAS
+/////////////////////////
+
+model Area {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  pincode String
+
+  latitude Float?
+
+  longitude Float?
+
+  zoneId Int
+
+  zone Zone @relation(fields: [zoneId], references: [id])
+
+  @@unique([name, zoneId])
+  @@index([zoneId])
+}
+
+/////////////////////////
+// RATE CARD
+/////////////////////////
+
+model RateCard {
+  id Int @id @default(autoincrement())
+
+  pickupZoneId Int
+
+  dropZoneId Int
+
+  pickupZone Zone @relation("PickupRate", fields: [pickupZoneId], references: [id])
+
+  dropZone Zone @relation("DropRate", fields: [dropZoneId], references: [id])
+
+  orderType OrderType
+
+  ratePerKg Decimal @db.Decimal(10, 2)
+
+  codCharge Decimal @db.Decimal(10, 2)
+
+  effectiveFrom DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([pickupZoneId, dropZoneId, orderType])
+  @@index([pickupZoneId])
+  @@index([dropZoneId])
+}
+
+/////////////////////////
+// ORDERS
+/////////////////////////
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  orderNumber String @unique
+
+  customerId Int
+
+  customer User @relation("CustomerOrders", fields: [customerId], references: [id])
+
+  assignedAgentId Int?
+
+  assignedAgent User? @relation("AgentOrders", fields: [assignedAgentId], references: [id])
+
+  pickupAddressLine String
+
+  dropAddressLine String
+
+  pickupPincode String
+
+  dropPincode String
+
+  pickupZoneId Int
+
+  pickupZone Zone @relation("PickupZone", fields: [pickupZoneId], references: [id])
+
+  dropZoneId Int
+
+  dropZone Zone @relation("DropZone", fields: [dropZoneId], references: [id])
+
+  lengthCm Decimal @db.Decimal(8, 2)
+
+  widthCm Decimal @db.Decimal(8, 2)
+
+  heightCm Decimal @db.Decimal(8, 2)
+
+  actualWeight Decimal @db.Decimal(8, 2)
+
+  volumetricWeight Decimal @db.Decimal(8, 2)
+
+  billableWeight Decimal @db.Decimal(8, 2)
+
+  orderType OrderType
+
+  paymentType PaymentType
+
+  deliveryCharge Decimal @db.Decimal(10, 2)
+
+  codCharge Decimal @db.Decimal(10, 2)
+
+  totalAmount Decimal @db.Decimal(10, 2)
+
+  status OrderStatus @default(PENDING)
+
+  trackingHistory TrackingHistory[]
+
+  notifications Notification[]
+
+  reschedules Reschedule[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([customerId])
+  @@index([assignedAgentId])
+  @@index([pickupZoneId])
+  @@index([dropZoneId])
+}
+
+/////////////////////////
+// TRACKING
+/////////////////////////
+model TrackingHistory {
+  id Int @id @default(autoincrement())
+
+  orderId Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  status OrderStatus
+
+  updatedById Int
+
+  updatedBy User @relation("TrackingUpdatedBy", fields: [updatedById], references: [id])
+
+  remarks String?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+}
+
+/////////////////////////
+// NOTIFICATIONS
+/////////////////////////
+model Notification {
+  id Int @id @default(autoincrement())
+
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  orderId Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  type NotificationType
+
+  message String
+
+  status String?
+
+  isSent Boolean @default(false)
+
+  isRead Boolean @default(false)
+
+  sentAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+/////////////////////////
+// RESCHEDULE
+/////////////////////////
+model Reschedule {
+  id Int @id @default(autoincrement())
+
+  orderId Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  oldDate DateTime
+
+  newDate DateTime
+
+  reason String?
+
+  reassignedAgentId Int?
+
+  reassignedAgent User? @relation("ReassignedAgent", fields: [reassignedAgentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+}
+
+/////////////////////////
+// AGENT LOCATION
+/////////////////////////
+model AgentLocation {
+  id Int @id @default(autoincrement())
+
+  agentId Int @unique
+
+  agent AgentProfile @relation(fields: [agentId], references: [id])
+
+  latitude Float
+
+  longitude Float
+
+  lastSeen DateTime @default(now())
+}
