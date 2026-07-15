@@ -27,6 +27,11 @@ The platform provides roles for Administrators (to supervise fleet logistics, ma
 - Standardized Failure Logging: Record delivery failures with mandatory reasons (Customer Not Available, Wrong Address, Customer Refused Delivery, Unable to Contact Customer, Vehicle Breakdown, Weather Issue, Address Not Found, Other) and custom remarks.
 - Availability Toggle: Control working status (Online / Offline) through a clean, rigid toggle interface.
 
+### Automated Email Notifications (Nodemailer SMTP Integration)
+- Booking Confirmation: Automatically dispatches a detailed shipping invoice and confirmation mail when an order is created.
+- Transition Triggers: Sends instant email alerts at critical lifecycle milestones (Picked Up, Out for Delivery, Delivered).
+- Exception & Failure Alerts: Immediately notifies the customer with standard failure reasons and operator remarks if a delivery attempt fails.
+
 ---
 
 ## 3. Tech Stack
