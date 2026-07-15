@@ -334,59 +334,110 @@ export default function AgentsModule({
                     </div>
                   </div>
 
-                  {/* Availability Toggle */}
                   <button
                     onClick={() => handleToggleAvailability(agent)}
                     style={{
-                      border: "none",
-                      background: agent.agentProfile?.availability
-                        ? "var(--primary)"
-                        : "var(--border)",
-                      color: agent.agentProfile?.availability
-                        ? "var(--bg-card)"
-                        : "var(--text-muted)",
-                      padding: "4px 8px",
+                      border: "1px solid var(--border)",
+                      background: "var(--bg-card)",
+                      color: "var(--text-primary)",
+                      padding: "4px 10px",
                       borderRadius: "var(--radius-sm)",
-                      fontSize: "0.7rem",
+                      fontSize: "0.75rem",
                       fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
                       cursor: "pointer",
+                      boxShadow: "var(--shadow-sm)",
                       transition: "var(--transition)",
                     }}
                   >
+                    <span style={{ 
+                      width: "6px", 
+                      height: "6px", 
+                      borderRadius: "50%", 
+                      backgroundColor: agent.agentProfile?.availability ? "var(--status-delivered)" : "var(--text-muted)",
+                      display: "inline-block" 
+                    }}></span>
                     {agent.agentProfile?.availability ? "Online" : "Offline"}
                   </button>
                 </div>
 
-                <div className="agent-card-body">
-                  <div>
-                    <div className="agent-stat-label">Zone</div>
-                    <div className="agent-stat-value" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <MapPin size={12} className="text-muted" /> {agent.agentProfile?.currentZone?.name || `Zone ${agent.agentProfile?.currentZoneId || "N/A"}`}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="agent-stat-label">Vehicle Type</div>
-                    <div className="agent-stat-value" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <Truck size={12} className="text-muted" /> {agent.agentProfile?.vehicleType} ({agent.agentProfile?.vehicleNumber || "N/A"})
-                    </div>
-                  </div>
-                  <div>
-                    <div className="agent-stat-label">Today's Jobs</div>
-                    <div className="agent-stat-value" style={{ fontWeight: "800" }}>{stats.assignedToday} Jobs</div>
-                  </div>
-                  <div>
-                    <div className="agent-stat-label">SLA Success</div>
-                    <div className="agent-stat-value" style={{ color: "var(--status-delivered)" }}>
-                      {stats.successRate}%
-                    </div>
-                  </div>
+                {/* 1. Zone & Vehicle Metadata Badges */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "2px" }}>
+                  <span style={{ 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    backgroundColor: "var(--bg-app)", 
+                    padding: "6px 10px", 
+                    borderRadius: "var(--radius-sm)", 
+                    fontSize: "0.75rem", 
+                    color: "var(--text-secondary)", 
+                    border: "1px solid var(--border)",
+                    fontWeight: "600"
+                  }}>
+                    <MapPin size={12} style={{ color: "var(--text-muted)" }} />
+                    {agent.agentProfile?.currentZone?.name || `Zone ${agent.agentProfile?.currentZoneId || "N/A"}`}
+                  </span>
+                  <span style={{ 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    backgroundColor: "var(--bg-app)", 
+                    padding: "6px 10px", 
+                    borderRadius: "var(--radius-sm)", 
+                    fontSize: "0.75rem", 
+                    color: "var(--text-secondary)", 
+                    border: "1px solid var(--border)",
+                    fontWeight: "600"
+                  }}>
+                    <Truck size={12} style={{ color: "var(--text-muted)" }} />
+                    {agent.agentProfile?.vehicleType} ({agent.agentProfile?.vehicleNumber || "N/A"})
+                  </span>
                 </div>
 
-                {/* Sub performance metrics */}
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-muted)", borderTop: "1px solid var(--border)", paddingTop: "8px" }}>
-                  <span>Delivered: <strong>{stats.completed}</strong></span>
-                  <span>Failed: <strong>{stats.failed}</strong></span>
-                  <span>Active Work: <strong style={{ color: "var(--primary)" }}>{stats.active}</strong></span>
+                {/* 2. Key Performance Indicators Row */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "4px 0", fontSize: "0.8rem" }}>
+                  <span style={{ color: "var(--text-secondary)", fontWeight: "500" }}>
+                    Today's Load: <strong style={{ color: "var(--text-primary)", fontWeight: "800" }}>{stats.assignedToday} Jobs</strong>
+                  </span>
+                  <span style={{ color: "var(--text-secondary)", fontWeight: "500", display: "flex", alignItems: "center", gap: "4px" }}>
+                    SLA Rate: 
+                    <strong style={{ 
+                      fontWeight: "800", 
+                      color: stats.successRate >= 80 ? "var(--status-delivered)" : stats.successRate >= 50 ? "var(--status-pending)" : "var(--status-failed)"
+                    }}>
+                      {stats.successRate}%
+                    </strong>
+                  </span>
+                </div>
+
+                {/* 3. Performance Scorecard Block */}
+                <div style={{ 
+                  display: "flex", 
+                  justifyContent: "space-around", 
+                  alignItems: "center", 
+                  backgroundColor: "var(--bg-app)",
+                  padding: "10px 12px", 
+                  borderRadius: "var(--radius-md)", 
+                  border: "1px solid var(--border)",
+                  marginTop: "2px"
+                }}>
+                  <div style={{ textAlign: "center", flex: 1 }}>
+                    <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.5px" }}>Delivered</div>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--status-delivered)", marginTop: "2px" }}>{stats.completed}</div>
+                  </div>
+                  <div style={{ height: "24px", width: "1px", backgroundColor: "var(--border)" }}></div>
+                  <div style={{ textAlign: "center", flex: 1 }}>
+                    <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.5px" }}>Failed</div>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--status-failed)", marginTop: "2px" }}>{stats.failed}</div>
+                  </div>
+                  <div style={{ height: "24px", width: "1px", backgroundColor: "var(--border)" }}></div>
+                  <div style={{ textAlign: "center", flex: 1 }}>
+                    <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.5px" }}>Active</div>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--primary)", marginTop: "2px" }}>{stats.active}</div>
+                  </div>
                 </div>
 
                 <div className="agent-card-footer">

@@ -243,14 +243,14 @@ export default function App() {
       <div className="auth-page">
         <div className="auth-card">
           <div className="auth-header" style={{ marginBottom: "24px" }}>
-            <div className="sidebar-logo" style={{ border: "none", padding: "0", justifyContent: "center", marginBottom: "16px" }}>
-              <TrendingUp size={32} className="text-primary" />
-              <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
+            <div className="sidebar-logo" style={{ border: "none", padding: "0", justifyContent: "center", marginBottom: "8px", gap: "6px" }}>
+              <TrendingUp size={24} className="text-primary" />
+              <span style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--text-secondary)", letterSpacing: "-0.03em" }}>
                 LastMile Logistics
               </span>
             </div>
-            <h2 className="auth-title" style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--text-primary)" }}>
-              {authMode === "login" ? "Log In" : "Set Agent Password"}
+            <h2 className="auth-title" style={{ fontSize: "2.0rem", fontWeight: "900", color: "var(--text-primary)", letterSpacing: "-0.03em", marginTop: "8px" }}>
+              {authMode === "login" ? "Log In" : "Set Password"}
             </h2>
           </div>
 
@@ -292,19 +292,19 @@ export default function App() {
                   onClick={() => { setAuthMode("activate"); setLoginError(""); }}
                   style={{ background: "none", border: "none", color: "var(--primary)", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer", textDecoration: "underline" }}
                 >
-                  First time log in? Set agent password here
+                  First time log in? Set password here
                 </button>
               </div>
             </form>
           ) : (
             <form onSubmit={handleActivateAgent}>
               <div className="form-group">
-                <label className="form-label">Registered Agent Email</label>
+                <label className="form-label">Registered Email</label>
                 <input
                   type="email"
                   className="form-input"
                   required
-                  placeholder="e.g. driver@domain.com"
+                  placeholder="e.g. user@domain.com"
                   value={activateEmail}
                   onChange={(e) => setActivateEmail(e.target.value)}
                   style={{ borderRadius: "var(--radius-sm)" }}
