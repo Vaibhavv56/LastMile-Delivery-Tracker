@@ -23,7 +23,8 @@ import { api } from "../utils/api";
 import { io } from "socket.io-client";
 
 // WebSockets connection URL derived from API base URL
-const socketUrl = window.location.origin.includes("localhost") ? "http://localhost:5000" : window.location.origin;
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const socketUrl = apiBaseUrl.replace("/api", "");
 
 // 20 Predefined Pune Region Polygons for Maharashtra Cities
 const PREDEFINED_POLYGONS = [
